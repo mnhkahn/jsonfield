@@ -2,6 +2,7 @@ package jsonfield
 
 import "testing"
 
+// TestJsonTest ...
 func TestJsonTest(t *testing.T) {
 	jj := new(A)
 	jj.A, jj.B = 111, 222
@@ -19,6 +20,7 @@ func TestJsonTest(t *testing.T) {
 	}
 }
 
+// A ...
 type A struct {
 	A int
 	B int

@@ -10,18 +10,23 @@ import (
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )
 
+// Marshal is compatible with std json.Marshal.
+// If fields is nil it acts as the std json package.
+// If fields is not nil it will only return the provided fields.
 func Marshal(v interface{}, fields ...string) ([]byte, error) {
 	if len(fields) == 0 {
 		return json.Marshal(v)
 	} else {
-		return MarshalFields(v, fields)
+		return marshalFields(v, fields)
 	}
 }
 
-func MarshalFields(c interface{}, fields []string) ([]byte, error) {
+// marshalFields marshals json based on the fields parameters.
+// It's based on reflect and ffjson.
+func marshalFields(c interface{}, fields []string) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 
-	_, v := Reflect(c)
+	_, v := reflectTypeAndValue(c)
 
 	buf.WriteString("{")
 	for i, field := range fields {
@@ -102,7 +107,8 @@ func MarshalFields(c interface{}, fields []string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func Reflect(c interface{}) (reflect.Type, reflect.Value) {
+// reflectTypeAndValue ...
+func reflectTypeAndValue(c interface{}) (reflect.Type, reflect.Value) {
 	t := reflect.TypeOf(c)
 	v := reflect.ValueOf(c)
 	if t.Kind() == reflect.Ptr {
